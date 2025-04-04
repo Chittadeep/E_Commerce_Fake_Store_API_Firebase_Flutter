@@ -43,11 +43,7 @@ class ProductTile extends StatelessWidget {
               color: wishlistContainsProduct ? Colors.red : Colors.black,
             ),
             onTap: () {
-              if (!wishlistContainsProduct) {
-                provider.addToWishlist(item.id!);
-              } else {
-                provider.removeFromWishlist(item.id!);
-              }
+              provider.tapAddToWishlist(item.id!);
             },
           );
         },

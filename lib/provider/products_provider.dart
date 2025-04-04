@@ -14,6 +14,7 @@ class ProductsProvider extends ChangeNotifier {
   String? get errorMessage => _errorMessage;
 
   List<int> wishlistProducts = [];
+  List<int> productsCart = [];
 
   ProductsProvider() {
     fetchData();
@@ -66,15 +67,26 @@ class ProductsProvider extends ChangeNotifier {
     }
   }
 
-  void addToWishlist(int productId) {
-    wishlistProducts.add(productId);
-    log("added to wishlist");
+  void tapAddToWishlist(int productId) {
+    if (wishlistProducts.contains(productId)) {
+      wishlistProducts.remove(productId);
+
+      log("added to wishlist");
+    } else {
+      wishlistProducts.add(productId);
+      log("removed from cart");
+    }
     notifyListeners();
   }
 
-  void removeFromWishlist(int productId) {
-    wishlistProducts.remove(productId);
-    log("removed from wishlist");
+  void tapAddToCart(int productId) {
+    if (productsCart.contains(productId)) {
+      productsCart.remove(productId);
+      log("added to cart");
+    } else {
+      productsCart.add(productId);
+      log("removed from cart");
+    }
     notifyListeners();
   }
 }
