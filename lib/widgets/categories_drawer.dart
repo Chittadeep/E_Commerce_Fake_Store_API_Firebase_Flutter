@@ -42,6 +42,12 @@ class CategoriesDrawer extends StatelessWidget {
                           });
                     }),
               ),
+              const ListTile(
+                title: Text("Wishlist"),
+              ),
+              const ListTile(
+                title: Text("Products Cart"),
+              ),
               ElevatedButton(
                   onPressed: () {
                     Provider.of<AuthService>(context, listen: true).signOut();
