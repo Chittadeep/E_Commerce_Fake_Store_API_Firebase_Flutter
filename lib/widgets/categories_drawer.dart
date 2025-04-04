@@ -42,8 +42,9 @@ class CategoriesDrawer extends StatelessWidget {
                           });
                     }),
               ),
-              const ListTile(
-                title: Text("Wishlist"),
+              ListTile(
+                title: const Text("Wishlist"),
+                onTap: () => Navigator.pushNamed(context, '/wishlist'),
               ),
               const ListTile(
                 title: Text("Products Cart"),

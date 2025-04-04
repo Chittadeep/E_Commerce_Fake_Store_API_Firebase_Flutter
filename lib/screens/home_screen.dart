@@ -10,9 +10,6 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dataProvider = Provider.of<ProductsProvider>(context, listen: true);
-    final productsProvider = Provider.of<CategoriesProvider>(context, listen: true);
-
 
     return Scaffold(
       appBar: AppBar(
