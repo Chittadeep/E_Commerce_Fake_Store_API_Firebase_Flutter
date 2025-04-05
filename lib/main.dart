@@ -1,11 +1,9 @@
 import 'package:e_commerce/provider/auth_provider.dart';
 import 'package:e_commerce/provider/categories_provider.dart';
 import 'package:e_commerce/provider/products_provider.dart';
-import 'package:e_commerce/provider/wishlist_provider.dart';
 import 'package:e_commerce/screens/cart_screen.dart';
 import 'package:e_commerce/screens/home_screen.dart';
 import 'package:e_commerce/screens/login_screen.dart';
-import 'package:e_commerce/screens/product_screen.dart';
 import 'package:e_commerce/screens/splash.dart';
 import 'package:e_commerce/screens/wishlist_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -30,7 +28,6 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (context)=> AuthProvider()),
           ChangeNotifierProvider(create: (context) => ProductsProvider()),
           ChangeNotifierProvider(create: (context) => CategoriesProvider()),
-          ChangeNotifierProvider(create: (context)=>WishlistProvider())
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,

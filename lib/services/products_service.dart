@@ -25,4 +25,24 @@ class ProductsService {
       return null;
     }
   }
+
+  Future<List<ProductModel>?> fetchDataByCategory(String category) async {
+    try {
+      List<ProductModel> data;
+      final response = await http.get(
+          Uri.parse('https://fakestoreapi.com/products/category/$category'));
+
+      if (response.statusCode == 200) {
+        List<dynamic> t = json.decode(response.body);
+        data = t.map((i) => ProductModel.fromJson(i)).toList();
+        return data;
+      } else {
+        log('Error: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      log('Failed to load data');
+      return null;
+    }
+  }
 }
