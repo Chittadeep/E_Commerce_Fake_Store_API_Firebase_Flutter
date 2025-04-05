@@ -35,10 +35,12 @@ class _SplashScreenState extends State<SplashScreen>
     // Navigate to the Home screen after 3 seconds
     Timer(const Duration(seconds: 5), () async {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      if (prefs.getString('uid') == null) {
-        Navigator.of(context).pushReplacementNamed('/login');
+      String? userId = prefs.getString('uid');
+
+      if (userId != null && userId.isNotEmpty) {
+        Navigator.pushReplacementNamed(context, '/home');
       } else {
-        Navigator.of(context).pushReplacementNamed('/home');
+        Navigator.pushReplacementNamed(context, '/login');
       }
     });
   }

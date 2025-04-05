@@ -1,13 +1,16 @@
 import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService extends ChangeNotifier {
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   Future<User?> _signInWithGoogle() async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
@@ -44,7 +47,7 @@ class AuthService extends ChangeNotifier {
 
   Future<void> signOut() async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
-    _prefs.setString('uid', '');
+    await _prefs.setString('uid', '');
 
     await GoogleSignIn().signOut();
     await _auth.signOut();
@@ -68,5 +71,10 @@ class AuthService extends ChangeNotifier {
     } else {
       log("Sign-In canceled or failed");
     }
+  }
+
+  Future<void> onTapLogin(BuildContext context) async {
+    formKey.currentState!.validate();
+    notifyListeners();
   }
 }
