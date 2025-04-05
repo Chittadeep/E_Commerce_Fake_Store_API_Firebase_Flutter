@@ -45,8 +45,9 @@ class CategoriesDrawer extends StatelessWidget {
                 title: const Text("Wishlist"),
                 onTap: () => Navigator.pushNamed(context, '/wishlist'),
               ),
-              const ListTile(
-                title: Text("Products Cart"),
+              ListTile(
+                title: const Text("Products Cart"),
+                onTap: ()=> Navigator.pushNamed(context, '/cart'),
               ),
               ElevatedButton(
                   onPressed: () {

@@ -89,4 +89,8 @@ class ProductsProvider extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  ProductModel getProductById(int productId) {
+    return data.where((product) => product.id == productId).single;
+  }
 }

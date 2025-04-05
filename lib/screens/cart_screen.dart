@@ -4,26 +4,27 @@ import 'package:e_commerce/widgets/product_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class WishlistScreen extends StatelessWidget {
-  const WishlistScreen({super.key});
+class CartScreen extends StatelessWidget {
+  const CartScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Consumer<ProductsProvider>(builder: (context, provider, child) {
-        if (provider.wishlistProducts.isEmpty) {
+    return Scaffold(body: Consumer<ProductsProvider>(
+      builder: (context, provider, child) {
+        if (provider.productsCart.isEmpty) {
           return const Center(
-              child: Text("No products available in the wishlist"));
+            child: Text("No products available in the product cart"),
+          );
         } else {
           return ListView.builder(
-              itemCount: provider.wishlistProducts.length,
+              itemCount: provider.productsCart.length,
               itemBuilder: (context, index) {
-                final itemId = provider.wishlistProducts[index];
+                final itemId = provider.productsCart[index];
                 ProductModel product = provider.getProductById(itemId);
                 return ProductTile(item: product);
               });
         }
-      }),
-    );
+      },
+    ));
   }
 }

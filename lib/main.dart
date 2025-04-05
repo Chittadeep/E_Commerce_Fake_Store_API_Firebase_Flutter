@@ -2,6 +2,7 @@ import 'package:e_commerce/provider/auth_provider.dart';
 import 'package:e_commerce/provider/categories_provider.dart';
 import 'package:e_commerce/provider/products_provider.dart';
 import 'package:e_commerce/provider/wishlist_provider.dart';
+import 'package:e_commerce/screens/cart_screen.dart';
 import 'package:e_commerce/screens/home_screen.dart';
 import 'package:e_commerce/screens/login_screen.dart';
 import 'package:e_commerce/screens/product_screen.dart';
@@ -38,7 +39,8 @@ class MyApp extends StatelessWidget {
             '/': (context) => const SplashScreen(),
             '/login': (context) => LoginScreen(),
             '/home': (context) => const HomeScreen(),
-            '/wishlist': (context)=> const WishlistScreen()
+            '/wishlist': (context)=> const WishlistScreen(),
+            '/cart': (context)=>const CartScreen()
           },
         ));
   }
