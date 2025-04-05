@@ -1,9 +1,8 @@
-import 'package:e_commerce/provider/auth_service_provider.dart';
-import 'package:e_commerce/provider/categories.provider.dart';
+import 'package:e_commerce/provider/auth_provider.dart';
+import 'package:e_commerce/provider/categories_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../provider/products_provider.dart';
 
 class CategoriesDrawer extends StatelessWidget {
   const CategoriesDrawer({
@@ -51,7 +50,7 @@ class CategoriesDrawer extends StatelessWidget {
               ),
               ElevatedButton(
                   onPressed: () {
-                    context.read<AuthService>().signOut();
+                    context.read<AuthProvider>().signOut();
                   },
                   child: const Text('Logout'))
             ],

@@ -1,4 +1,4 @@
-import 'package:e_commerce/provider/categories.provider.dart';
+import 'package:e_commerce/provider/categories_provider.dart';
 import 'package:e_commerce/widgets/categories_drawer.dart';
 import 'package:e_commerce/widgets/product_tile.dart';
 import 'package:flutter/material.dart';

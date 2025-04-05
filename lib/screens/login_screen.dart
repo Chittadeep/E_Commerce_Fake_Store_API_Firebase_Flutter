@@ -1,4 +1,4 @@
-import 'package:e_commerce/provider/auth_service_provider.dart';
+import 'package:e_commerce/provider/auth_provider.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
@@ -9,7 +9,7 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final authService = context.read<AuthService>();
+    final authService = context.read<AuthProvider>();
 
     return Scaffold(
       appBar: AppBar(
@@ -25,7 +25,7 @@ class LoginScreen extends StatelessWidget {
               children: [
                 // Email Field
                 TextFormField(
-                  //controller: _emailController,
+                  controller: authService.emailController,
                   decoration: const InputDecoration(
                     labelText: 'Email',
                     border: OutlineInputBorder(),
@@ -45,7 +45,7 @@ class LoginScreen extends StatelessWidget {
 
                 // Password Field
                 TextFormField(
-                  //controller: _passwordController,
+                  controller: authService.passwordController,
                   obscureText: true,
                   decoration: const InputDecoration(
                     labelText: 'Password',

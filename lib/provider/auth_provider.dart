@@ -1,47 +1,25 @@
 import 'dart:developer';
 
+import 'package:e_commerce/services/auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class AuthService extends ChangeNotifier {
+class AuthProvider extends ChangeNotifier {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  final AuthService _authService = AuthService();
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
   Future<User?> _signInWithGoogle() async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
-    try {
-      // Trigger the Google Sign-In flow
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-      if (googleUser == null) {
-        // User canceled the login
-        return null;
-      }
-
-      // Obtain the auth details from the request
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
-
-      // Create a new credential using GoogleAuthProvider
-      final OAuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-
-      // Sign in to Firebase with the new credential
-      UserCredential userCredential =
-          await _auth.signInWithCredential(credential);
-
-      _prefs.setString('uid', userCredential.user!.uid);
-
-      return userCredential.user;
-    } catch (e) {
-      log('Error during Google Sign-In: $e');
-      return null;
+    User? user = await _authService.signInWithGoogle();
+    if (user != null) {
+      _prefs.setString('uid', user.uid);
     }
   }
 
@@ -75,6 +53,5 @@ class AuthService extends ChangeNotifier {
 
   Future<void> onTapLogin(BuildContext context) async {
     formKey.currentState!.validate();
-    notifyListeners();
   }
 }
