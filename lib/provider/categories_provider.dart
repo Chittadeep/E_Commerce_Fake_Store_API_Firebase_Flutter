@@ -1,19 +1,22 @@
 import 'dart:convert';
 import 'package:e_commerce/provider/products_provider.dart';
+import 'package:e_commerce/services/categories_service.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 class CategoriesProvider extends ChangeNotifier {
-  List<dynamic> _data = [];
+  List<dynamic>? _data = [];
   bool _isLoading = false;
   String? _errorMessage;
   String? _selectedCategory; // Track selected category
 
-  List<dynamic> get data => _data;
+  List<dynamic>? get data => _data;
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
   String? get selectedCategory => _selectedCategory;
+
+  CategoriesService _categoriesService = CategoriesService();
 
   CategoriesProvider() {
     fetchData();
@@ -25,21 +28,13 @@ class CategoriesProvider extends ChangeNotifier {
     _errorMessage = null;
     notifyListeners();
 
-    try {
-      final response = await http
-          .get(Uri.parse('https://fakestoreapi.com/products/categories'));
+    _data = await _categoriesService.fetchData();
 
-      if (response.statusCode == 200) {
-        _data = json.decode(response.body);
-      } else {
-        _errorMessage = 'Error: ${response.statusCode}';
-      }
-    } catch (e) {
-      _errorMessage = 'Failed to load data';
-    } finally {
-      _isLoading = false;
-      notifyListeners();
+    if (data==null) {
+      _errorMessage = "Failed to load categories data";
     }
+    _isLoading = false;
+    notifyListeners();
   }
 
   void selectCategory(String category) {

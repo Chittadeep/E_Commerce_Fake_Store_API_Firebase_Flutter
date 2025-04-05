@@ -25,9 +25,9 @@ class CategoriesDrawer extends StatelessWidget {
             children: [
               Expanded(
                 child: ListView.builder(
-                    itemCount: provider.data.length,
+                    itemCount: provider.data!.length,
                     itemBuilder: (context, index) {
-                      final item = provider.data[index];
+                      final item = provider.data![index];
                       final isSelected = provider.selectedCategory == item;
 
                       return ListTile(
