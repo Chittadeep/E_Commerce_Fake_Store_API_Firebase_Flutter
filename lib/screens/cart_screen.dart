@@ -9,22 +9,26 @@ class CartScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: Consumer<ProductsProvider>(
-      builder: (context, provider, child) {
-        if (provider.productsCart.isEmpty) {
-          return const Center(
-            child: Text("No products available in the product cart"),
-          );
-        } else {
-          return ListView.builder(
-              itemCount: provider.productsCart.length,
-              itemBuilder: (context, index) {
-                final itemId = provider.productsCart[index];
-                ProductModel product = provider.getProductById(itemId);
-                return ProductTile(item: product);
-              });
-        }
-      },
-    ));
+    return Scaffold(
+        appBar: AppBar(
+          title: const Text("Cart"),
+        ),
+        body: Consumer<ProductsProvider>(
+          builder: (context, provider, child) {
+            if (provider.productsCart.isEmpty) {
+              return const Center(
+                child: Text("No products available in the product cart"),
+              );
+            } else {
+              return ListView.builder(
+                  itemCount: provider.productsCart.length,
+                  itemBuilder: (context, index) {
+                    final itemId = provider.productsCart[index];
+                    ProductModel product = provider.getProductById(itemId);
+                    return ProductTile(item: product);
+                  });
+            }
+          },
+        ));
   }
 }

@@ -10,6 +10,9 @@ class WishlistScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text("Wishlist"),
+      ),
       body: Consumer<ProductsProvider>(builder: (context, provider, child) {
         if (provider.wishlistProducts.isEmpty) {
           return const Center(
