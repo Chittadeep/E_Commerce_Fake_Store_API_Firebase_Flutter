@@ -1,20 +1,23 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:e_commerce/model/product_model.dart';
+import 'package:e_commerce/services/products_service.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class ProductsProvider extends ChangeNotifier {
-  List<ProductModel> _data = [];
+  List<ProductModel>? _data = [];
   bool _isLoading = false;
   String? _errorMessage;
 
-  List<ProductModel> get data => _data;
+  List<ProductModel>? get data => _data;
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
 
   List<int> wishlistProducts = [];
   List<int> productsCart = [];
+
+  final ProductsService _productsService = ProductsService();
 
   ProductsProvider() {
     fetchData();
@@ -26,23 +29,16 @@ class ProductsProvider extends ChangeNotifier {
     _errorMessage = null;
     notifyListeners();
 
-    try {
-      final response =
-          await http.get(Uri.parse('https://fakestoreapi.com/products'));
+      _data = await _productsService.fetchData();
 
-      if (response.statusCode == 200) {
-        List<dynamic> t = json.decode(response.body);
-        _data = t.map((i) => ProductModel.fromJson(i)).toList();
-      } else {
-        _errorMessage = 'Error: ${response.statusCode}';
+      if(data==null)
+      {
+        _errorMessage = 'Failed to load products';
       }
-    } catch (e) {
-      _errorMessage = 'Failed to load data';
-    } finally {
       _isLoading = false;
       notifyListeners();
     }
-  }
+  
 
   Future<void> fetchDataByCategory(String category) async {
     _isLoading = true;
@@ -91,6 +87,6 @@ class ProductsProvider extends ChangeNotifier {
   }
 
   ProductModel getProductById(int productId) {
-    return data.where((product) => product.id == productId).single;
+    return data!.where((product) => product.id == productId).single;
   }
 }

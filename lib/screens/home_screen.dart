@@ -26,14 +26,14 @@ class HomeScreen extends StatelessWidget {
             return Center(child: Text(provider.errorMessage!));
           }
 
-          if (provider.data.isEmpty) {
+          if (provider.data!.isEmpty) {
             return const Center(child: Text('No data found.'));
           }
 
           return ListView.builder(
-            itemCount: provider.data.length,
+            itemCount: provider.data!.length,
             itemBuilder: (context, index) {
-              final item = provider.data[index];
+              final item = provider.data![index];
               return ProductTile(item: item);
             },
           );

@@ -1,9 +1,7 @@
-import 'dart:convert';
 import 'package:e_commerce/provider/products_provider.dart';
 import 'package:e_commerce/services/categories_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:http/http.dart' as http;
 
 class CategoriesProvider extends ChangeNotifier {
   List<dynamic>? _data = [];
@@ -16,7 +14,7 @@ class CategoriesProvider extends ChangeNotifier {
   String? get errorMessage => _errorMessage;
   String? get selectedCategory => _selectedCategory;
 
-  CategoriesService _categoriesService = CategoriesService();
+  final CategoriesService _categoriesService = CategoriesService();
 
   CategoriesProvider() {
     fetchData();
