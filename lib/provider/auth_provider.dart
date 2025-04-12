@@ -73,7 +73,6 @@ class AuthProvider extends ChangeNotifier {
     if (user != null) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString('uid', user.uid);
-      _createFirebaseDocument(user);
       Navigator.pushReplacementNamed(context, '/home');
       return user;
     }
@@ -83,15 +82,16 @@ class AuthProvider extends ChangeNotifier {
   Future<void> onTapCreateAccount(BuildContext context) async {
     signupFormKey.currentState!.validate();
 
-    User? user = await _authService.signUpWithEmail(signupEmailController.text,
-        signupPasswordController.text, signupNameController.text);
+    User? user = await _authService.signUpWithEmail(
+        signupEmailController.text, signupPasswordController.text);
 
     if (user != null) {
+      await _createFirebaseDocument(user, name: signupNameController.text);
       Navigator.pop(context);
     }
   }
 
-  Future<void> _createFirebaseDocument(User user) async {
+  Future<void> _createFirebaseDocument(User user, {String? name}) async {
     final DocumentReference userRef =
         _firestore.collection('users').doc(user.uid);
 
@@ -100,7 +100,7 @@ class AuthProvider extends ChangeNotifier {
     if (!doc.exists) {
       await userRef.set({
         'uid': user.uid,
-        'name': user.displayName,
+        'name': name ?? user.displayName,
         'email': user.email,
         'photoURL': user.photoURL,
         'createdAt': FieldValue.serverTimestamp(),
