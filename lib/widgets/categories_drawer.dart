@@ -17,8 +17,8 @@ class CategoriesDrawer extends StatelessWidget {
           const SizedBox(
             height: 50,
           ),
-          getProfileCard(context),
-          getCategories(context),
+          getProfileCard(),
+          getCategories(),
           ListTile(
             title: const Text("Wishlist"),
             onTap: () => Navigator.pushNamed(context, '/wishlist'),
@@ -37,24 +37,27 @@ class CategoriesDrawer extends StatelessWidget {
     );
   }
 
-  Widget getProfileCard(BuildContext context) {
+  Widget getProfileCard() {
     return Consumer<ProfileProvider>(
         builder: (context, provider, child) => provider.loading
             ? const CircularProgressIndicator()
             : SizedBox(
                 height: 100,
                 width: 300,
-                child: Card(
-                  color: Colors.purple,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [CircleAvatar(), Text(provider.name ?? '')],
+                child: InkWell(
+                  onTap: () => Navigator.pushNamed(context, '/profile'),
+                  child: Card(
+                    color: Colors.purple,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [CircleAvatar(), Text(provider.name ?? '')],
+                    ),
                   ),
                 ),
               ));
   }
 
-  Widget getCategories(BuildContext) {
+  Widget getCategories() {
     return Consumer<CategoriesProvider>(builder: (context, provider, child) {
       if (provider.isLoading) {
         return const Center(child: CircularProgressIndicator());
