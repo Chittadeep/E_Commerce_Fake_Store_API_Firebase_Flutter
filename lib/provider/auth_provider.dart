@@ -29,24 +29,7 @@ class AuthProvider extends ChangeNotifier {
     if (user != null) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString('uid', user.uid);
-
-      final DocumentReference userRef =
-          _firestore.collection('users').doc(user.uid);
-
-      final doc = await userRef.get();
-
-      if (!doc.exists) {
-        await userRef.set({
-          'uid': user.uid,
-          'name': user.displayName,
-          'email': user.email,
-          'photoURL': user.photoURL,
-          'createdAt': FieldValue.serverTimestamp(),
-        });
-        log("User document created");
-      } else {
-        log("User document already exists");
-      }
+      _createFirebaseDocument(user);
       return user;
     }
     return null;
@@ -90,6 +73,7 @@ class AuthProvider extends ChangeNotifier {
     if (user != null) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString('uid', user.uid);
+      _createFirebaseDocument(user);
       Navigator.pushReplacementNamed(context, '/home');
       return user;
     }
@@ -104,6 +88,26 @@ class AuthProvider extends ChangeNotifier {
 
     if (user != null) {
       Navigator.pop(context);
+    }
+  }
+
+  Future<void> _createFirebaseDocument(User user) async {
+    final DocumentReference userRef =
+        _firestore.collection('users').doc(user.uid);
+
+    final doc = await userRef.get();
+
+    if (!doc.exists) {
+      await userRef.set({
+        'uid': user.uid,
+        'name': user.displayName,
+        'email': user.email,
+        'photoURL': user.photoURL,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+      log("User document created");
+    } else {
+      log("User document already exists");
     }
   }
 }
