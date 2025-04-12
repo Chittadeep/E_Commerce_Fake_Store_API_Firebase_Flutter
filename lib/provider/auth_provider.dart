@@ -8,15 +8,20 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthProvider extends ChangeNotifier {
-  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> loginFormKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> signupFormKey = GlobalKey<FormState>();
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   final AuthService _authService = AuthService();
 
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController loginEmailController = TextEditingController();
+  final TextEditingController loginPasswordController = TextEditingController();
+  
+  final TextEditingController signupNameController = TextEditingController();
+  final TextEditingController signupEmailController = TextEditingController();
+  final TextEditingController signupPasswordController = TextEditingController();
 
   Future<User?> _signInWithGoogle() async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
@@ -52,7 +57,7 @@ class AuthProvider extends ChangeNotifier {
 
     await GoogleSignIn().signOut();
     await _auth.signOut();
-  
+
     Navigator.pushReplacementNamed(context, '/login');
   }
 
@@ -77,6 +82,17 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<void> onTapLogin(BuildContext context) async {
-    formKey.currentState!.validate();
+    loginFormKey.currentState!.validate();
+  }
+
+  Future<void> onTapCreateAccount(BuildContext context) async {
+    signupFormKey.currentState!.validate();
+
+    User? user = await _authService.signUpWithEmail(
+        signupEmailController.text, signupPasswordController.text, signupNameController.text);
+
+    if (user != null) {
+      Navigator.pop(context);
+    }
   }
 }

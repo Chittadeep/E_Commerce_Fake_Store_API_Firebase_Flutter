@@ -20,12 +20,12 @@ class LoginScreen extends StatelessWidget {
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24.0),
           child: Form(
-            key: authService.formKey,
+            key: authService.loginFormKey,
             child: Column(
               children: [
                 // Email Field
                 TextFormField(
-                  controller: authService.emailController,
+                  controller: authService.loginEmailController,
                   decoration: const InputDecoration(
                     labelText: 'Email',
                     border: OutlineInputBorder(),
@@ -45,7 +45,7 @@ class LoginScreen extends StatelessWidget {
 
                 // Password Field
                 TextFormField(
-                  controller: authService.passwordController,
+                  controller: authService.loginPasswordController,
                   obscureText: true,
                   decoration: const InputDecoration(
                     labelText: 'Password',
@@ -67,12 +67,26 @@ class LoginScreen extends StatelessWidget {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () => {authService.onTapLogin(context)}, //_loginWithEmailPassword(context),
+                    onPressed: () => {
+                      authService.onTapLogin(context)
+                    }, //_loginWithEmailPassword(context),
                     child: const Text('Login'),
                   ),
                 ),
-
                 const SizedBox(height: 20),
+
+                // Sign Up Button
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton(
+                    onPressed: () {
+                      // You can navigate to the SignUp screen or call a method here
+                      Navigator.pushNamed(context,
+                          '/signup'); // <-- Make sure this method exists
+                    },
+                    child: const Text('Sign Up'),
+                  ),
+                ),
 
                 // Divider
                 const Row(
