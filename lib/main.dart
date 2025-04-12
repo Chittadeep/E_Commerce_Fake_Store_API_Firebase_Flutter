@@ -1,6 +1,7 @@
 import 'package:e_commerce/provider/auth_provider.dart';
 import 'package:e_commerce/provider/categories_provider.dart';
 import 'package:e_commerce/provider/products_provider.dart';
+import 'package:e_commerce/provider/profile_provider.dart';
 import 'package:e_commerce/screens/cart_screen.dart';
 import 'package:e_commerce/screens/home_screen.dart';
 import 'package:e_commerce/screens/login_screen.dart';
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (context)=> AuthProvider()),
+          ChangeNotifierProvider(create: (context)=> ProfileProvider()),
           ChangeNotifierProvider(create: (context) => ProductsProvider()),
           ChangeNotifierProvider(create: (context) => CategoriesProvider()),
         ],

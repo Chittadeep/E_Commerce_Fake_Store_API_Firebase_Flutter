@@ -1,7 +1,12 @@
+import 'dart:developer';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce/provider/products_provider.dart';
+import 'package:e_commerce/services/auth_service.dart';
 import 'package:e_commerce/services/categories_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CategoriesProvider extends ChangeNotifier {
   List<dynamic>? _data = [];
@@ -15,6 +20,7 @@ class CategoriesProvider extends ChangeNotifier {
   String? get selectedCategory => _selectedCategory;
 
   final CategoriesService _categoriesService = CategoriesService();
+  final AuthService _authService = AuthService();
 
   CategoriesProvider() {
     fetchData();
@@ -28,7 +34,7 @@ class CategoriesProvider extends ChangeNotifier {
 
     _data = await _categoriesService.fetchData();
 
-    if (data==null) {
+    if (data == null) {
       _errorMessage = "Failed to load categories data";
     }
     _isLoading = false;
@@ -53,4 +59,6 @@ class CategoriesProvider extends ChangeNotifier {
         .fetchDataByCategory(item);
     Navigator.pop(context);
   }
+
+
 }
