@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce/services/auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AuthProvider extends ChangeNotifier {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   final AuthService _authService = AuthService();
 
@@ -20,15 +23,37 @@ class AuthProvider extends ChangeNotifier {
     User? user = await _authService.signInWithGoogle();
     if (user != null) {
       _prefs.setString('uid', user.uid);
+
+      final DocumentReference userRef =
+          _firestore.collection('users').doc(user.uid);
+
+      final doc = await userRef.get();
+
+      if (!doc.exists) {
+        await userRef.set({
+          'uid': user.uid,
+          'name': user.displayName,
+          'email': user.email,
+          'photoURL': user.photoURL,
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+        log("User document created");
+      } else {
+        log("User document already exists");
+      }
+      return user;
     }
+    return null;
   }
 
-  Future<void> signOut() async {
+  Future<void> signOut(BuildContext context) async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     await _prefs.setString('uid', '');
 
     await GoogleSignIn().signOut();
     await _auth.signOut();
+  
+    Navigator.pushReplacementNamed(context, '/login');
   }
 
   bool isUserSignedIn() {

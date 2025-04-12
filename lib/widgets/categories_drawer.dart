@@ -51,7 +51,7 @@ class CategoriesDrawer extends StatelessWidget {
               ),
               ElevatedButton(
                   onPressed: () {
-                    context.read<AuthProvider>().signOut();
+                    context.read<AuthProvider>().signOut(context);
                   },
                   child: const Text('Logout'))
             ],
