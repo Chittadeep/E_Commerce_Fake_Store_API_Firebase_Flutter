@@ -37,7 +37,7 @@ class AuthService {
   }
 
   Future<User?> signUpWithEmail(
-      String email, String password, String name) async {
+      String email, String password) async {
     try {
       // Create user in Firebase Auth
       UserCredential userCredential =
