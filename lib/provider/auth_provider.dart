@@ -102,7 +102,9 @@ class AuthProvider extends ChangeNotifier {
         'uid': user.uid,
         'name': name ?? user.displayName,
         'email': user.email,
-        'photoURL': user.photoURL,
+        'photoURL': user.photoURL, 
+        'photo': '',
+        'gender': '',
         'createdAt': FieldValue.serverTimestamp(),
       });
       log("User document created");
