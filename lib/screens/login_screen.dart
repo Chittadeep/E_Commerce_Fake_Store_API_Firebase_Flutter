@@ -1,4 +1,5 @@
 import 'package:e_commerce/provider/auth_provider.dart';
+import 'package:email_validator/email_validator.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
@@ -35,7 +36,7 @@ class LoginScreen extends StatelessWidget {
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter email';
-                    } else if (!value.contains('@')) {
+                    } else if (!EmailValidator.validate(value)) {
                       return 'Please enter a valid email';
                     }
                     return null;
