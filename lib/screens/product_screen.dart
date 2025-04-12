@@ -96,10 +96,11 @@ class ProductScreen extends StatelessWidget {
                             child: Text(
                                 provider.wishlistProducts.contains(product.id)
                                     ? "Remove from wishlist"
-                                    : "Add to wishlist")))
+                                    : "Add to wishlist"))),
                   ],
                 );
-              })
+              }),
+              Center(child: ElevatedButton(onPressed: () {}, child: const Text("Buy Now")))
             ],
           ),
         ),
