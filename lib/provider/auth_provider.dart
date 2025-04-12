@@ -18,16 +18,17 @@ class AuthProvider extends ChangeNotifier {
 
   final TextEditingController loginEmailController = TextEditingController();
   final TextEditingController loginPasswordController = TextEditingController();
-  
+
   final TextEditingController signupNameController = TextEditingController();
   final TextEditingController signupEmailController = TextEditingController();
-  final TextEditingController signupPasswordController = TextEditingController();
+  final TextEditingController signupPasswordController =
+      TextEditingController();
 
   Future<User?> _signInWithGoogle() async {
-    SharedPreferences _prefs = await SharedPreferences.getInstance();
     User? user = await _authService.signInWithGoogle();
     if (user != null) {
-      _prefs.setString('uid', user.uid);
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('uid', user.uid);
 
       final DocumentReference userRef =
           _firestore.collection('users').doc(user.uid);
@@ -81,15 +82,25 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> onTapLogin(BuildContext context) async {
+  Future<User?> onTapLogin(BuildContext context) async {
     loginFormKey.currentState!.validate();
+
+    User? user = await _authService.signInWithEmail(
+        loginEmailController.text, loginPasswordController.text);
+    if (user != null) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('uid', user.uid);
+      Navigator.pushReplacementNamed(context, '/home');
+      return user;
+    }
+    return null;
   }
 
   Future<void> onTapCreateAccount(BuildContext context) async {
     signupFormKey.currentState!.validate();
 
-    User? user = await _authService.signUpWithEmail(
-        signupEmailController.text, signupPasswordController.text, signupNameController.text);
+    User? user = await _authService.signUpWithEmail(signupEmailController.text,
+        signupPasswordController.text, signupNameController.text);
 
     if (user != null) {
       Navigator.pop(context);
