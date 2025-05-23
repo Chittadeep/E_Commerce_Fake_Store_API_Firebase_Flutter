@@ -56,6 +56,7 @@ class ProfileProvider extends ChangeNotifier {
       debugPrint('Gender: $selectedGender');
       debugPrint('Phone: $selectedCountryCode ${phoneController.text}');
       debugPrint('Image: ${imageFile?.path}');
+      saveProfileData();
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Profile Updated')),
       );
@@ -78,13 +79,36 @@ class ProfileProvider extends ChangeNotifier {
       photoUrl = data['photoURL'];
       phone = data['phone'];
 
+      selectedGender = data['gender'] ?? 'Male';
+      selectedCountryCode = data['countryCode'] ?? '+91';
+
       log(email ?? 'No email found');
       log(name ?? 'No name found');
       log(photoUrl ?? 'No photo Url found');
 
       nameController.text = name ?? '';
       phoneController.text = phone ?? '';
-      
+    } catch (e) {
+      log(e.toString());
+    } finally {
+      loading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> saveProfileData() async {
+    try {
+      loading = true;
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      String uid = preferences.get('uid') as String;
+      log("UID is $uid");
+
+      await FirebaseFirestore.instance.collection('users').doc(uid).update({
+        'countryCode': selectedCountryCode,
+        'phone': phoneController.text,
+        'name': nameController.text,
+        'gender': selectedGender
+      });
     } catch (e) {
       log(e.toString());
     } finally {
