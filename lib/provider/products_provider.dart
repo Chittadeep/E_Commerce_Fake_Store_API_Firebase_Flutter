@@ -55,12 +55,13 @@ class ProductsProvider extends ChangeNotifier {
   void tapAddToWishlist(int productId) {
     if (wishlistProducts.contains(productId)) {
       wishlistProducts.remove(productId);
-
       log("added to wishlist");
     } else {
       wishlistProducts.add(productId);
       log("removed from cart");
     }
+    
+    _productsService.addToWishlistFirebase(wishlistProducts);
     notifyListeners();
   }
 

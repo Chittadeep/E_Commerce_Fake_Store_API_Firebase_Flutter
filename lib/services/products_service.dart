@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce/model/product_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProductsService {
   Future<List<ProductModel>?> fetchData() async {
@@ -43,6 +45,19 @@ class ProductsService {
     } catch (e) {
       log('Failed to load data');
       return null;
+    }
+  }
+
+  Future<void> addToWishlistFirebase(List<int> productIds) async {
+    try {
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      String uid = preferences.get('uid') as String;
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .update({'Wish List': productIds});
+    } catch (e) {
+      log(e.toString());
     }
   }
 }
