@@ -1,4 +1,3 @@
-
 import 'dart:developer';
 import 'package:e_commerce/model/product_model.dart';
 import 'package:e_commerce/services/products_service.dart';
@@ -60,7 +59,7 @@ class ProductsProvider extends ChangeNotifier {
       wishlistProducts.add(productId);
       log("removed from cart");
     }
-    
+
     _productsService.addToWishlistFirebase(wishlistProducts);
     notifyListeners();
   }
@@ -73,6 +72,7 @@ class ProductsProvider extends ChangeNotifier {
       productsCart.add(productId);
       log("removed from cart");
     }
+    _productsService.addToCartFirebase(productsCart);
     notifyListeners();
   }
 

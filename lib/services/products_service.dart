@@ -60,4 +60,17 @@ class ProductsService {
       log(e.toString());
     }
   }
+
+  Future<void> addToCartFirebase(List<int> productIds) async {
+    try {
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      String uid = preferences.get('uid') as String;
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .update({'Cart': productIds});
+    } catch (e) {
+      log(e.toString());
+    }
+  }
 }
