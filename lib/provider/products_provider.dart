@@ -1,7 +1,9 @@
 import 'dart:developer';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce/model/product_model.dart';
 import 'package:e_commerce/services/products_service.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProductsProvider extends ChangeNotifier {
   List<ProductModel>? _data = [];
@@ -20,6 +22,7 @@ class ProductsProvider extends ChangeNotifier {
   ProductsProvider() {
     fetchData();
     fetchWishlist();
+    fetchCart();
   }
 
   // Method to fetch data from the API
@@ -83,5 +86,9 @@ class ProductsProvider extends ChangeNotifier {
 
   Future<void> fetchWishlist() async {
     wishlistProducts = await _productsService.fetchWishlist();
+  }
+
+  Future<void> fetchCart() async {
+    productsCart = await _productsService.fetchCart();
   }
 }

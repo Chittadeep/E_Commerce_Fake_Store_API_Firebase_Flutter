@@ -95,4 +95,26 @@ class ProductsService {
       return [];
     }
   }
+
+  Future<List<int>> fetchCart() async {
+    try {
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      String uid = preferences.get('uid') as String;
+      log("UID is $uid");
+      DocumentSnapshot doc =
+          await FirebaseFirestore.instance.collection('users').doc(uid).get();
+
+      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+
+      List<dynamic> dynamicList = data['Cart'] ?? []; // Handle null case
+      List<int> cart = dynamicList.map((e) => e as int).toList();
+
+      log(cart.toString());
+
+      return cart;
+    } catch (e) {
+      log(e.toString());
+      return [];
+    }
+  }
 }
