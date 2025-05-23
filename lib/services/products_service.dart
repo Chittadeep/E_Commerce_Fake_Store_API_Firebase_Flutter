@@ -73,4 +73,26 @@ class ProductsService {
       log(e.toString());
     }
   }
+
+  Future<List<int>> fetchWishlist() async {
+    try {
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      String uid = preferences.get('uid') as String;
+      log("UID is $uid");
+      DocumentSnapshot doc =
+          await FirebaseFirestore.instance.collection('users').doc(uid).get();
+
+      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+
+      List<dynamic> dynamicList = data['Wish List'] ?? []; // Handle null case
+      List<int> wishlist = dynamicList.map((e) => e as int).toList();
+
+      log(wishlist.toString());
+
+      return wishlist;
+    } catch (e) {
+      log(e.toString());
+      return [];
+    }
+  }
 }

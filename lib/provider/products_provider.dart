@@ -19,6 +19,7 @@ class ProductsProvider extends ChangeNotifier {
 
   ProductsProvider() {
     fetchData();
+    fetchWishlist();
   }
 
   // Method to fetch data from the API
@@ -78,5 +79,9 @@ class ProductsProvider extends ChangeNotifier {
 
   ProductModel getProductById(int productId) {
     return data!.where((product) => product.id == productId).single;
+  }
+
+  Future<void> fetchWishlist() async {
+    wishlistProducts = await _productsService.fetchWishlist();
   }
 }
