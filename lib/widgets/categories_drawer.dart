@@ -50,7 +50,7 @@ class CategoriesDrawer extends StatelessWidget {
                     color: Colors.purple,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [CircleAvatar(), Text(provider.name ?? '')],
+                      children: [CircleAvatar(child: Image.network(provider.photoUrl??''),), Text(provider.name ?? '')],
                     ),
                   ),
                 ),
