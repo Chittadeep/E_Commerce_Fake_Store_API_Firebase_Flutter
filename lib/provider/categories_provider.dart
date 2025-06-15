@@ -50,13 +50,12 @@ class CategoriesProvider extends ChangeNotifier {
   void onTapCategory(BuildContext context, String item) {
     if (selectedCategory == item) {
       selectCategory("");
-      Provider.of<ProductsProvider>(context, listen: false).fetchData();
+      context.read<ProductsProvider>().fetchData();
       return;
     }
 
     selectCategory(item);
-    Provider.of<ProductsProvider>(context, listen: false)
-        .fetchDataByCategory(item);
+    context.read<ProductsProvider>().fetchDataByCategory(item);
     Navigator.pop(context);
   }
 

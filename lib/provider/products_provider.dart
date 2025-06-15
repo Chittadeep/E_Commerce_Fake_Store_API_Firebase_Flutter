@@ -1,15 +1,13 @@
 import 'dart:developer';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce/model/product_model.dart';
 import 'package:e_commerce/services/products_service.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 class ProductsProvider extends ChangeNotifier {
   List<ProductModel>? _data = [];
   bool _isLoading = false;
   String? _errorMessage;
-
   List<ProductModel>? get data => _data;
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
@@ -19,7 +17,21 @@ class ProductsProvider extends ChangeNotifier {
 
   final ProductsService _productsService = ProductsService();
 
+  final razorpay = Razorpay();
+
   ProductsProvider() {
+    razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS,
+        (PaymentSuccessResponse response) {
+      log("Payment Success: ${response.paymentId}");
+    });
+    razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET,
+        (ExternalWalletResponse response) {
+      log("External Wallet: ${response.walletName}");
+    });
+    razorpay.on(Razorpay.EVENT_PAYMENT_ERROR,
+        (PaymentFailureResponse response) {
+      log("Payment Error: ${response.code} - ${response.message}");
+    });
     fetchData();
     fetchWishlist();
     fetchCart();
@@ -90,5 +102,21 @@ class ProductsProvider extends ChangeNotifier {
 
   Future<void> fetchCart() async {
     productsCart = await _productsService.fetchCart();
+  }
+
+  void openCheckout({required String name, required double amt,required String description}) {
+    var options = {
+      'key': 'rzp_test_hMYWloNvGMlPnd',
+      'amount': 100,
+      'name': name,
+      'description': description,
+      'retry': {'enabled': true, 'max_count': 1},
+      'send_sms_hash': true,
+      'prefill': {'contact': '8888888888', 'email': 'test@razorpay.com'},
+      'external': {
+        'wallets': ['paytm']
+      }
+    };
+    razorpay.open(options);
   }
 }

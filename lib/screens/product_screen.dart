@@ -9,6 +9,7 @@ class ProductScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ProductsProvider provider = context.read<ProductsProvider>();
     return Scaffold(
       appBar: AppBar(
         title: const Text("Product Details"),
@@ -76,31 +77,25 @@ class ProductScreen extends StatelessWidget {
                 product.description!,
                 style: const TextStyle(fontSize: 16),
               ),
-              Consumer<ProductsProvider>(builder: (context, provider, child) {
-                return Column(
-                  children: [
-                    Center(
-                        child: ElevatedButton(
-                            onPressed: () {
-                              provider.tapAddToCart(product.id!);
-                            },
-                            child: Text(
-                                provider.productsCart.contains(product.id)
-                                    ? "Remove from cart"
-                                    : "Add to cart"))),
-                    Center(
-                        child: ElevatedButton(
-                            onPressed: () {
-                              provider.tapAddToWishlist(product.id!);
-                            },
-                            child: Text(
-                                provider.wishlistProducts.contains(product.id)
-                                    ? "Remove from wishlist"
-                                    : "Add to wishlist"))),
-                  ],
-                );
-              }),
-              Center(child: ElevatedButton(onPressed: () {}, child: const Text("Buy Now")))
+              Column(children: [
+                Center(
+                    child: ElevatedButton(
+                        onPressed: () {
+                          provider.tapAddToCart(product.id!);
+                        },
+                        child: Text(provider.productsCart.contains(product.id)
+                            ? "Remove from cart"
+                            : "Add to cart"))),
+                Center(
+                    child: ElevatedButton(
+                        onPressed: () {
+                          provider.openCheckout(
+                              name: product.title!,
+                              amt: product.price!,
+                              description: product.description!);
+                        },
+                        child: const Text("Buy Now")))
+              ])
             ],
           ),
         ),
