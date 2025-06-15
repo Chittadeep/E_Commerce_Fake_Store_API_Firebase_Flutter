@@ -39,8 +39,8 @@ class ProductTile extends StatelessWidget {
               provider.wishlistProducts.contains(item.id!);
           return GestureDetector(
             child: Icon(
-              Icons.heart_broken,
-              color: wishlistContainsProduct ? Colors.red : Colors.black,
+              Icons.favorite_border,
+              color: wishlistContainsProduct ? Colors.red : Colors.grey,
             ),
             onTap: () {
               provider.tapAddToWishlist(item.id!);
