@@ -22,14 +22,52 @@ class ProductScreen extends StatelessWidget {
             children: [
               // Product Image
               Center(
-                child: Image.network(
-                  product.image!,
-                  height: 200,
-                  fit: BoxFit.cover,
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  child: Stack(
+                    children: [
+                      Center(
+                        child: Image.network(
+                          product.image!,
+                          height: 200,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      Positioned(
+                        top: 8,
+                        right: 30,
+                        child: Consumer<ProductsProvider>(
+                          builder: (context, provider, child) {
+                            bool isInWishlist =
+                                provider.wishlistProducts.contains(product.id);
+                            return GestureDetector(
+                              onTap: () {
+                                provider.tapAddToWishlist(product.id!);
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withOpacity(0.8),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  isInWishlist
+                                      ? Icons.favorite
+                                      : Icons.favorite_border,
+                                  color:
+                                      isInWishlist ? Colors.red : Colors.grey,
+                                  size: 24,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(height: 16),
-
               // Product Title
               Text(
                 product.title!,
@@ -39,7 +77,6 @@ class ProductScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 8),
-
               // Product Price
               Text(
                 "\$${product.price}",
@@ -50,7 +87,6 @@ class ProductScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-
               // Product Rating
               Row(
                 children: [
@@ -63,7 +99,6 @@ class ProductScreen extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 16),
-
               // Product Description
               const Text(
                 "Description",
