@@ -5,50 +5,105 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ProductTile extends StatelessWidget {
-  ProductTile({
+  const ProductTile({
     super.key,
     required this.item,
   });
 
   final ProductModel item;
-  Color wishlistedColor = Colors.red;
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
+    return GestureDetector(
       onTap: () => Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => ProductScreen(item),
         ),
       ),
-      leading: ClipRRect(
-        borderRadius: BorderRadius.circular(8.0), // Adjust the radius as needed
-        child: Image.network(
-          item.image!,
-          width: 50,
-          height: 50,
-          fit: BoxFit.cover,
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        elevation: 4,
+        margin: const EdgeInsets.all(4),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Product Image
+            ClipRRect(
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(16)),
+              child: Image.network(
+                item.image!,
+                height: 140,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
+            ),
+
+            // Title & Wishlist Button
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Text(
+                      item.title!,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  Consumer<ProductsProvider>(
+                    builder: (context, provider, child) {
+                      final isWishlisted =
+                          provider.wishlistProducts.contains(item.id!);
+                      return IconButton(
+                        icon: Icon(
+                          isWishlisted ? Icons.favorite : Icons.favorite_border,
+                          color: isWishlisted ? Colors.red : Colors.grey,
+                          size: 20,
+                        ),
+                        onPressed: () {
+                          provider.tapAddToWishlist(item.id!);
+                        },
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+
+            // Short Description
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Text(
+                item.description!,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(fontSize: 12, color: Colors.black54),
+              ),
+            ),
+
+            // Price (if available)
+            if (item.price != null)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                child: Text(
+                  "\$${item.price!.toStringAsFixed(2)}",
+                  style: const TextStyle(
+                    color: Colors.green,
+                    fontWeight: FontWeight.bold,  
+                    fontSize: 14,
+                  ),
+                ),
+              ),
+          ],
         ),
       ),
-      title: Text(item.title!), // Assuming the data has a 'title' field
-      subtitle: Text(item.description!),
-      trailing: Consumer<ProductsProvider>(
-        builder: (context, provider, child) {
-          bool wishlistContainsProduct =
-              provider.wishlistProducts.contains(item.id!);
-          return GestureDetector(
-            child: Icon(
-              Icons.favorite_border,
-              color: wishlistContainsProduct ? Colors.red : Colors.grey,
-            ),
-            onTap: () {
-              provider.tapAddToWishlist(item.id!);
-            },
-          );
-        },
-      ),
-      // Assuming the data has a 'description' field
     );
   }
 }
