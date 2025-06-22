@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProductsService {
-  Future<List<ProductModel>?> fetchData() async {
+  Future<List<ProductModel>?> fetchAllProducts() async {
     try {
       List<ProductModel> _data;
 
@@ -28,7 +28,7 @@ class ProductsService {
     }
   }
 
-  Future<List<ProductModel>?> fetchDataByCategory(String category) async {
+  Future<List<ProductModel>?> fetchProductsByCategory(String category) async {
     try {
       List<ProductModel> data;
       final response = await http.get(
@@ -38,6 +38,25 @@ class ProductsService {
         List<dynamic> t = json.decode(response.body);
         data = t.map((i) => ProductModel.fromJson(i)).toList();
         return data;
+      } else {
+        log('Error: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      log('Failed to load data');
+      return null;
+    }
+  }
+
+Future<ProductModel?> fetchProductById(int productId) async {
+    try {
+      final response = await http
+          .get(Uri.parse('https://fakestoreapi.com/products/$productId'));
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> t = json.decode(response.body);
+        ProductModel product = ProductModel.fromJson(t);
+        return product;
       } else {
         log('Error: ${response.statusCode}');
         return null;
@@ -117,4 +136,5 @@ class ProductsService {
       return [];
     }
   }
-}
+
+  }
