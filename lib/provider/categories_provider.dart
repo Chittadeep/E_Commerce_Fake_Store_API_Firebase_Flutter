@@ -9,12 +9,12 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CategoriesProvider extends ChangeNotifier {
-  List<dynamic>? _data = [];
+  List<String>? _data = [];
   bool _isLoading = false;
   String? _errorMessage;
   String? _selectedCategory; // Track selected category
 
-  List<dynamic>? get data => _data;
+  List<String>? get data => _data;
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
   String? get selectedCategory => _selectedCategory;
