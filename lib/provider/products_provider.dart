@@ -20,6 +20,13 @@ class ProductsProvider extends ChangeNotifier {
   final razorpay = Razorpay();
 
   ProductsProvider() {
+    initializeRazorpay();
+    fetchData();
+    fetchWishlist();
+    fetchCart();
+  }
+
+void initializeRazorpay() {
     razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS,
         (PaymentSuccessResponse response) {
       log("Payment Success: ${response.paymentId}");
@@ -32,9 +39,6 @@ class ProductsProvider extends ChangeNotifier {
         (PaymentFailureResponse response) {
       log("Payment Error: ${response.code} - ${response.message}");
     });
-    fetchData();
-    fetchWishlist();
-    fetchCart();
   }
 
   // Method to fetch data from the API
@@ -43,7 +47,7 @@ class ProductsProvider extends ChangeNotifier {
     _errorMessage = null;
     notifyListeners();
 
-    _data = await _productsService.fetchData();
+    _data = await _productsService.fetchAllProducts();
 
     if (data == null) {
       _errorMessage = 'Failed to load products';
@@ -57,7 +61,7 @@ class ProductsProvider extends ChangeNotifier {
     _errorMessage = null;
     notifyListeners();
 
-    _data = await _productsService.fetchDataByCategory(category);
+    _data = await _productsService.fetchProductsByCategory(category);
 
     if (data == null) {
       _errorMessage = 'Failed to load categorised products';
