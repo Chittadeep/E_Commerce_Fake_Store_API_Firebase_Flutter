@@ -31,7 +31,7 @@ class LoginScreen extends StatelessWidget {
                   AuthSwitchPrompt(
                     promptText: "Don't have an account? ",
                     actionText: 'Sign Up',
-                    onTap: () => Navigator.pushReplacementNamed(context, '/signup'),
+                    onTap: () => Navigator.pushNamed(context, '/signup'),
                   ),
                 ],
               ),
@@ -92,7 +92,7 @@ class _LoginCard extends StatelessWidget {
           const SizedBox(height: 20),
           const Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
+            children: [
               FieldLabel('PASSWORD'),
               _ForgotPasswordLink(),
             ],
@@ -112,7 +112,7 @@ class _LoginCard extends StatelessWidget {
           const SizedBox(height: 20),
           const OrDivider(),
           const SizedBox(height: 20),
-          _SocialSignInRow(
+          SocialAuthRow(
             onGoogleTap: () => authService.onTapLoginWithGoogle(context),
             onAppleTap: () {
               // TODO: authService.onTapLoginWithApple(context)
@@ -154,42 +154,6 @@ class _ForgotPasswordLink extends StatelessWidget {
         'Forgot Password?',
         style: TextStyle(color: kBrandBlue, fontWeight: FontWeight.w600, fontSize: 13),
       ),
-    );
-  }
-}
-
-class _SocialSignInRow extends StatelessWidget {
-  const _SocialSignInRow({required this.onGoogleTap, required this.onAppleTap});
-
-  final VoidCallback onGoogleTap;
-  final VoidCallback onAppleTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: SocialButton(
-            label: 'Google',
-            icon: Image.asset(
-              'assets/icons/google.png',
-              height: 20,
-              width: 20,
-              errorBuilder: (context, error, stackTrace) =>
-              const Icon(Icons.g_mobiledata, size: 22),
-            ),
-            onPressed: onGoogleTap,
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: SocialButton(
-            label: 'Apple',
-            icon: const Icon(Icons.apple, size: 20),
-            onPressed: onAppleTap,
-          ),
-        ),
-      ],
     );
   }
 }
