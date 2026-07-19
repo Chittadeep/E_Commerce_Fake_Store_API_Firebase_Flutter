@@ -121,4 +121,19 @@ class AuthProvider extends ChangeNotifier {
       log("User document already exists");
     }
   }
+
+  void toggleLoginPasswordVisibility() {
+    _obscureLoginPassword = !_obscureLoginPassword;
+    notifyListeners();
+  }
+
+  void toggleSignupPasswordVisibility() {
+    _obscureSignupPassword = !_obscureSignupPassword;
+    notifyListeners();
+  }
+
+  void toggleAgreedToTerms(bool? value) {
+    _agreedToTerms = value ?? false;
+    notifyListeners();
+  }
 }
