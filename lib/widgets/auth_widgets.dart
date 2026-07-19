@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show TargetPlatform, defaultTargetPlatform;
 import 'package:flutter/material.dart';
 
 const Color kBrandBlue = Color(0xFF1A3FBF);
@@ -265,6 +266,60 @@ class SocialButton extends StatelessWidget {
       onPressed: onPressed,
       icon: icon,
       label: Text(label, style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.w600)),
+    );
+  }
+}
+
+/// Google + Apple sign-in row, shared by login and signup.
+///
+/// Apple's Human Interface Guidelines require "Sign in with Apple" to be
+/// offered only where it's actually relevant (iOS/macOS), so the Apple
+/// button is hidden on Android and other platforms rather than always
+/// shown. When it's hidden, Google expands to fill the row.
+class SocialAuthRow extends StatelessWidget {
+  const SocialAuthRow({
+    super.key,
+    required this.onGoogleTap,
+    required this.onAppleTap,
+  });
+
+  final VoidCallback onGoogleTap;
+  final VoidCallback onAppleTap;
+
+  static bool get _isApplePlatform =>
+      defaultTargetPlatform == TargetPlatform.iOS ||
+          defaultTargetPlatform == TargetPlatform.macOS;
+
+  @override
+  Widget build(BuildContext context) {
+    final googleButton = SocialButton(
+      label: 'Google',
+      icon: Image.asset(
+        'assets/icons/google.png',
+        height: 20,
+        width: 20,
+        errorBuilder: (context, error, stackTrace) =>
+        const Icon(Icons.g_mobiledata, size: 22),
+      ),
+      onPressed: onGoogleTap,
+    );
+
+    if (!_isApplePlatform) {
+      return googleButton;
+    }
+
+    return Row(
+      children: [
+        Expanded(child: googleButton),
+        const SizedBox(width: 12),
+        Expanded(
+          child: SocialButton(
+            label: 'Apple',
+            icon: const Icon(Icons.apple, size: 20),
+            onPressed: onAppleTap,
+          ),
+        ),
+      ],
     );
   }
 }
