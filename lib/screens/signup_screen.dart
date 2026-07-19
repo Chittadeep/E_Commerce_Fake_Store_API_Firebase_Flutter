@@ -33,7 +33,7 @@ class SignupScreen extends StatelessWidget {
                   AuthSwitchPrompt(
                     promptText: 'Already have an account? ',
                     actionText: 'Sign In',
-                    onTap: () => Navigator.pushReplacementNamed(context, '/login'),
+                    onTap: () => Navigator.pushNamed(context, '/login'),
                   ),
                   const SizedBox(height: 20),
                   const _FooterLinks(),
@@ -117,7 +117,7 @@ class _SignupCard extends StatelessWidget {
           const SizedBox(height: 20),
           const OrDivider(),
           const SizedBox(height: 20),
-          _SocialSignupRow(
+          SocialAuthRow(
             onGoogleTap: () => authService.onTapLoginWithGoogle(context),
             onAppleTap: () {
               // TODO: authService.onTapSignupWithApple(context)
@@ -220,41 +220,6 @@ class _TermsCheckbox extends StatelessWidget {
   }
 }
 
-class _SocialSignupRow extends StatelessWidget {
-  const _SocialSignupRow({required this.onGoogleTap, required this.onAppleTap});
-
-  final VoidCallback onGoogleTap;
-  final VoidCallback onAppleTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: SocialButton(
-            label: 'Google',
-            icon: Image.asset(
-              'assets/icons/google.png',
-              height: 20,
-              width: 20,
-              errorBuilder: (context, error, stackTrace) =>
-              const Icon(Icons.g_mobiledata, size: 22),
-            ),
-            onPressed: onGoogleTap,
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: SocialButton(
-            label: 'Apple',
-            icon: const Icon(Icons.apple, size: 20),
-            onPressed: onAppleTap,
-          ),
-        ),
-      ],
-    );
-  }
-}
 
 /// "Help · Privacy · Security" footer. Static -> const.
 class _FooterLinks extends StatelessWidget {
