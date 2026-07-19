@@ -24,6 +24,15 @@ class AuthProvider extends ChangeNotifier {
   final TextEditingController signupPasswordController =
       TextEditingController();
 
+  bool _obscureLoginPassword = true;
+  bool get obscureLoginPassword => _obscureLoginPassword;
+
+  bool _obscureSignupPassword = true;
+  bool get obscureSignupPassword => _obscureSignupPassword;
+
+  bool _agreedToTerms = false;
+  bool get agreedToTerms => _agreedToTerms;
+
   Future<User?> _signInWithGoogle() async {
     User? user = await _authService.signInWithGoogle();
     if (user != null) {
