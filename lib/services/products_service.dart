@@ -48,7 +48,7 @@ class ProductsService {
     }
   }
 
-Future<ProductModel?> fetchProductById(int productId) async {
+  Future<ProductModel?> fetchProductById(int productId) async {
     try {
       final response = await http
           .get(Uri.parse('https://fakestoreapi.com/products/$productId'));
@@ -136,5 +136,4 @@ Future<ProductModel?> fetchProductById(int productId) async {
       return [];
     }
   }
-
-  }
+}
