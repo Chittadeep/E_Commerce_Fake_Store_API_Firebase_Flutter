@@ -1,11 +1,13 @@
 import 'package:e_commerce/provider/auth_provider.dart';
 import 'package:e_commerce/provider/categories_provider.dart';
+import 'package:e_commerce/provider/navigation_provider.dart';
 import 'package:e_commerce/provider/products_provider.dart';
 import 'package:e_commerce/provider/profile_provider.dart';
 import 'package:e_commerce/screens/cart_screen.dart';
 import 'package:e_commerce/screens/edit_profile_screen.dart';
 import 'package:e_commerce/screens/home_screen.dart';
 import 'package:e_commerce/screens/login_screen.dart';
+import 'package:e_commerce/screens/main_shell.dart';
 import 'package:e_commerce/screens/signup_screen.dart';
 import 'package:e_commerce/screens/splash.dart';
 import 'package:e_commerce/screens/wishlist_screen.dart';
@@ -29,6 +31,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (context)=> AuthProvider()),
+          ChangeNotifierProvider(create: (_) => NavigationProvider()),
           ChangeNotifierProvider(create: (context)=> ProfileProvider()),
           ChangeNotifierProvider(create: (context) => ProductsProvider()),
           ChangeNotifierProvider(create: (context) => CategoriesProvider()),
@@ -38,12 +41,9 @@ class MyApp extends StatelessWidget {
           initialRoute: '/',
           routes: {
             '/': (context) => const SplashScreen(),
-            '/login': (context) => LoginScreen(),
+            '/login': (context) => const LoginScreen(),
             '/signup': (context) => const SignupScreen(),
-            '/profile': (context)=> const EditProfileScreen(),
-            '/home': (context) => const HomeScreen(),
-            '/wishlist': (context)=> const WishlistScreen(),
-            '/cart': (context)=>const CartScreen()
+            '/home': (context) => const MainShell(),
           },
         ));
   }
