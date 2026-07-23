@@ -5,6 +5,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../model/profile_models.dart';
+import '../screens/edit_profile_screen.dart';
 
 class ProfileProvider extends ChangeNotifier {
   String? name;
@@ -26,13 +28,18 @@ class ProfileProvider extends ChangeNotifier {
   final genders = ['Male', 'Female', 'Other'];
   final countryCodes = ['+91', '+1', '+44', '+61', '+81'];
 
+  List<SavedAddress> savedAddresses = [];
+  List<OrderSummary> orderHistory = [];
+
   ProfileProvider() {
     fetchProfileData();
+    fetchSavedAddresses();
+    fetchOrderHistory();
   }
 
   void pickImage() async {
     final pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
+    await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       imageFile = File(pickedFile.path);
       notifyListeners();
@@ -70,7 +77,7 @@ class ProfileProvider extends ChangeNotifier {
       String uid = preferences.get('uid') as String;
       log("UID is $uid");
       DocumentSnapshot doc =
-          await FirebaseFirestore.instance.collection('users').doc(uid).get();
+      await FirebaseFirestore.instance.collection('users').doc(uid).get();
 
       Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
 
@@ -113,6 +120,131 @@ class ProfileProvider extends ChangeNotifier {
       log(e.toString());
     } finally {
       loading = false;
+      notifyListeners();
+    }
+  }
+
+  /// Reads the user's saved addresses from Firestore.
+  /// Expected shape on the user doc:
+  ///   'addresses': [ {'label': 'Home', 'fullAddress': '123 Maple Ave...'}, ... ]
+  Future<void> fetchSavedAddresses() async {
+    try {
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      String uid = preferences.get('uid') as String;
+      DocumentSnapshot doc =
+      await FirebaseFirestore.instance.collection('users').doc(uid).get();
+
+      final data = doc.data() as Map<String, dynamic>?;
+      final rawAddresses = (data?['addresses'] as List<dynamic>?) ?? [];
+
+      savedAddresses = rawAddresses.map((raw) {
+        final map = raw as Map<String, dynamic>;
+        final label = map['label'] as String? ?? '';
+        return SavedAddress(
+          label: label,
+          icon: _iconForAddressLabel(label),
+          fullAddress: map['fullAddress'] as String? ?? '',
+        );
+      }).toList();
+    } catch (e) {
+      log(e.toString());
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  IconData _iconForAddressLabel(String label) {
+    switch (label.toLowerCase()) {
+      case 'home':
+        return Icons.home_outlined;
+      case 'work':
+        return Icons.business_center_outlined;
+      default:
+        return Icons.location_on_outlined;
+    }
+  }
+
+  /// Prompts for an updated address via a dialog, then persists the full
+  /// address list back to Firestore. Takes `context` (like `submit`
+  /// already does) since showing the edit dialog needs one.
+  Future<void> editAddress(BuildContext context, SavedAddress address) async {
+    final controller = TextEditingController(text: address.fullAddress);
+
+    final updatedText = await showDialog<String>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text('Edit ${address.label} Address'),
+        content: TextField(controller: controller, maxLines: 3, autofocus: true),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(dialogContext, controller.text),
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    );
+
+    if (updatedText == null || updatedText.trim().isEmpty) return;
+
+    final index = savedAddresses.indexWhere((a) => a.label == address.label);
+    if (index == -1) return;
+
+    savedAddresses[index] = SavedAddress(
+      label: address.label,
+      icon: address.icon,
+      fullAddress: updatedText.trim(),
+    );
+    notifyListeners();
+
+    await _persistAddresses();
+  }
+
+  Future<void> _persistAddresses() async {
+    try {
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      String uid = preferences.get('uid') as String;
+
+      await FirebaseFirestore.instance.collection('users').doc(uid).update({
+        'addresses': savedAddresses
+            .map((a) => {'label': a.label, 'fullAddress': a.fullAddress})
+            .toList(),
+      });
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  /// Reads order history from a `users/{uid}/orders` subcollection.
+  /// Expected fields per order doc: orderId, status ('delivered' or
+  /// anything else treated as in-transit), date, amount.
+  Future<void> fetchOrderHistory() async {
+    try {
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      String uid = preferences.get('uid') as String;
+
+      QuerySnapshot query = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .collection('orders')
+          .orderBy('date', descending: true)
+          .get();
+
+      orderHistory = query.docs.map((doc) {
+        final data = doc.data() as Map<String, dynamic>;
+        return OrderSummary(
+          id: data['orderId'] as String? ?? doc.id,
+          status: data['status'] == 'delivered' ? OrderStatus.delivered : OrderStatus.inTransit,
+          date: data['date'] as String? ?? '',
+          amount: (data['amount'] as num?)?.toDouble() ?? 0,
+        );
+      }).toList();
+    } catch (e) {
+      log(e.toString());
+    } finally {
       notifyListeners();
     }
   }
