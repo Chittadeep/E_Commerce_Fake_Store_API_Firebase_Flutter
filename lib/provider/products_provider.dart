@@ -26,7 +26,7 @@ class ProductsProvider extends ChangeNotifier {
     fetchCart();
   }
 
-void initializeRazorpay() {
+  void initializeRazorpay() {
     razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS,
         (PaymentSuccessResponse response) {
       log("Payment Success: ${response.paymentId}");
@@ -123,4 +123,10 @@ void initializeRazorpay() {
     };
     razorpay.open(options);
   }
+
+  void incrementCartItem(int productId) { notifyListeners(); }
+
+  void decrementCartItem(int productId) { notifyListeners(); } // remove line at 0
+  void removeCartItem(int productId) { notifyListeners(); }
+  void clearCart() { notifyListeners(); }
 }
