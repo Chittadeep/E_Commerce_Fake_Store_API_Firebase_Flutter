@@ -164,28 +164,29 @@ class ProductGridCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Stack(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: Image.network(
-                      product.image ?? '',
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => Container(
-                        color: Colors.grey.shade100,
-                        child: const Icon(Icons.image_not_supported_outlined, color: Colors.grey),
+            Expanded(
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.network(
+                        product.image ?? '',
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Container(
+                          color: Colors.grey.shade100,
+                          child: const Icon(Icons.image_not_supported_outlined, color: Colors.grey),
+                        ),
                       ),
                     ),
                   ),
-                ),
-                Positioned(
-                  top: 4,
-                  right: 4,
-                  child: _FavoriteButton(isFavorite: isFavorite, onTap: onFavoriteTap),
-                ),
-              ],
+                  Positioned(
+                    top: 4,
+                    right: 4,
+                    child: _FavoriteButton(isFavorite: isFavorite, onTap: onFavoriteTap),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 8),
             if (product.category != null)
