@@ -2,6 +2,7 @@ import 'package:e_commerce/model/product_model.dart';
 import 'package:e_commerce/provider/categories_provider.dart';
 import 'package:e_commerce/provider/navigation_provider.dart';
 import 'package:e_commerce/provider/products_provider.dart';
+import 'package:e_commerce/screens/checkout_screen.dart';
 import 'package:e_commerce/screens/product_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -418,9 +419,10 @@ class _OrderSummaryCard extends StatelessWidget {
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               ),
-              onPressed: () {
-                // TODO: navigate to / trigger checkout flow.
-              },
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => CheckoutScreen(subtotal: subtotal)),
+              ),
               child: const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
