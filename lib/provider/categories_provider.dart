@@ -19,10 +19,9 @@ class CategoriesProvider extends ChangeNotifier {
   String? get errorMessage => _errorMessage;
   String? get selectedCategory => _selectedCategory;
 
-  final CategoriesService _categoriesService = CategoriesService();
-  final AuthService _authService = AuthService();
+  final CategoriesService _categoriesService;
 
-  CategoriesProvider() {
+  CategoriesProvider(this._categoriesService) {
     fetchData();
   }
 

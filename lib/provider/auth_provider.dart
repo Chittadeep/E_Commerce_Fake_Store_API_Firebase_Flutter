@@ -14,7 +14,7 @@ class AuthProvider extends ChangeNotifier {
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  final AuthService _authService = AuthService();
+  final AuthService _authService;
 
   final TextEditingController loginEmailController = TextEditingController();
   final TextEditingController loginPasswordController = TextEditingController();
@@ -32,6 +32,8 @@ class AuthProvider extends ChangeNotifier {
 
   bool _agreedToTerms = false;
   bool get agreedToTerms => _agreedToTerms;
+
+  AuthProvider(this._authService);
 
   Future<User?> _signInWithGoogle() async {
     User? user = await _authService.signInWithGoogle();

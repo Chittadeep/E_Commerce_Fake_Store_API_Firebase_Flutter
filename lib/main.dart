@@ -11,6 +11,9 @@ import 'package:e_commerce/screens/main_shell.dart';
 import 'package:e_commerce/screens/signup_screen.dart';
 import 'package:e_commerce/screens/splash.dart';
 import 'package:e_commerce/screens/wishlist_screen.dart';
+import 'package:e_commerce/services/auth_service.dart';
+import 'package:e_commerce/services/categories_service.dart';
+import 'package:e_commerce/services/products_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -30,11 +33,14 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
         providers: [
-          ChangeNotifierProvider(create: (context)=> AuthProvider()),
+          Provider<AuthService>(create: (_)=> AuthService()),
+          Provider<CategoriesService>(create: (_)=> CategoriesService()),
+          Provider<ProductsService>(create: (_)=> ProductsService()),
+          ChangeNotifierProvider(create: (context)=> AuthProvider(context.read<AuthService>())),
           ChangeNotifierProvider(create: (_) => NavigationProvider()),
           ChangeNotifierProvider(create: (context)=> ProfileProvider()),
-          ChangeNotifierProvider(create: (context) => ProductsProvider()),
-          ChangeNotifierProvider(create: (context) => CategoriesProvider()),
+          ChangeNotifierProvider(create: (context) => ProductsProvider(context.read<ProductsService>())),
+          ChangeNotifierProvider(create: (context) => CategoriesProvider(context.read<CategoriesService>())),
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,

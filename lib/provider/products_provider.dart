@@ -16,10 +16,11 @@ class ProductsProvider extends ChangeNotifier {
   List<int> productsCart = [];
 
   final ProductsService _productsService = ProductsService();
+  final ProductsService _productsService;
 
   final razorpay = Razorpay();
 
-  ProductsProvider() {
+  ProductsProvider(this._productsService) {
     initializeRazorpay();
     fetchData();
     fetchWishlist();
