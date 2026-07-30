@@ -39,7 +39,7 @@ class WishlistScreenBody extends StatelessWidget {
               trailingText: 'Clear All',
               onTrailingTap: () {
                 for (final id in List<int>.from(wishlistIds)) {
-                  provider.tapAddToWishlist(id);
+                  provider.tapWishlistProduct(id);
                 }
               },
             ),
@@ -58,10 +58,10 @@ class WishlistScreenBody extends StatelessWidget {
                 final product = products[index];
                 return _WishlistCard(
                   product: product,
-                  onRemove: () => provider.tapAddToWishlist(product.id!),
+                  onRemove: () => provider.tapCartProduct(product.id!),
                   onMoveToCart: () {
-                    provider.tapAddToCart(product.id!);
-                    provider.tapAddToWishlist(product.id!);
+                    provider.tapCartProduct(product.id!);
+                    provider.tapWishlistProduct(product.id!);
                   },
                   onTap: () => Navigator.push(
                     context,
