@@ -218,7 +218,7 @@ class _TrendingGrid extends StatelessWidget {
               return ProductGridCard(
                 product: product,
                 isFavorite: isFavorite,
-                onFavoriteTap: () => provider.tapAddToWishlist(product.id!),
+                onFavoriteTap: () => provider.tapWishlistProduct(product.id!),
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => ProductScreen(product)),

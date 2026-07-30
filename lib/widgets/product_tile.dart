@@ -68,7 +68,7 @@ class ProductTile extends StatelessWidget {
                           size: 20,
                         ),
                         onPressed: () {
-                          provider.tapAddToWishlist(item.id!);
+                          provider.tapWishlistProduct(item.id!);
                         },
                       );
                     },

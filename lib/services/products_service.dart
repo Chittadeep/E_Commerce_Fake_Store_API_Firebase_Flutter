@@ -67,7 +67,7 @@ class ProductsService {
     }
   }
 
-  Future<void> addToWishlistFirebase(List<int> productIds) async {
+  Future<void> updateWishlistFirebase(List<int> productIds) async {
     try {
       SharedPreferences preferences = await SharedPreferences.getInstance();
       String uid = preferences.get('uid') as String;
@@ -80,7 +80,7 @@ class ProductsService {
     }
   }
 
-  Future<void> addToCartFirebase(List<int> productIds) async {
+  Future<void> updateCartFirebase(List<int> productIds) async {
     try {
       SharedPreferences preferences = await SharedPreferences.getInstance();
       String uid = preferences.get('uid') as String;

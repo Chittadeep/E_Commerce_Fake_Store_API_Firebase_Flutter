@@ -44,7 +44,7 @@ class _ProductScreenState extends State<ProductScreen> {
                     _ProductImageHeader(
                       product: product,
                       isInWishlist: isInWishlist,
-                      onWishlistTap: () => provider.tapAddToWishlist(product.id!),
+                      onWishlistTap: () => provider.tapWishlistProduct(product.id!),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(16.0),

@@ -52,7 +52,7 @@ class CartScreenBody extends StatelessWidget {
                 quantity: line.quantity,
                 onIncrement: () => provider.incrementCartItem(line.product.id!),
                 onDecrement: () => provider.decrementCartItem(line.product.id!),
-                onRemove: () => provider.removeCartItem(line.product.id!),
+                onRemove: () => provider.tapCartProduct(line.product.id!)
               ),
               const SizedBox(height: 12),
             ],

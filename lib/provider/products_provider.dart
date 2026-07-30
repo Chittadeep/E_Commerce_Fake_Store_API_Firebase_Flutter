@@ -72,7 +72,7 @@ class ProductsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void tapAddToWishlist(int productId) {
+  void tapWishlistProduct(int productId) {
     if (wishlistProducts.contains(productId)) {
       wishlistProducts.remove(productId);
       log("added to wishlist");
@@ -81,11 +81,11 @@ class ProductsProvider extends ChangeNotifier {
       log("removed from cart");
     }
 
-    _productsService.addToWishlistFirebase(wishlistProducts);
+    _productsService.updateCartFirebase(wishlistProducts);
     notifyListeners();
   }
 
-  void tapAddToCart(int productId) {
+  void tapCartProduct(int productId) {
     if (productsCart.contains(productId)) {
       productsCart.remove(productId);
       log("added to cart");
@@ -93,7 +93,7 @@ class ProductsProvider extends ChangeNotifier {
       productsCart.add(productId);
       log("removed from cart");
     }
-    _productsService.addToCartFirebase(productsCart);
+    _productsService.updateCartFirebase(productsCart);
     notifyListeners();
   }
 
