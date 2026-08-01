@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce/model/product_model.dart';
+import 'package:e_commerce/model/profile_models.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -134,6 +135,42 @@ class ProductsService {
     } catch (e) {
       log(e.toString());
       return [];
+    }
+  }
+
+  Future<List<int>> fetchOrders() async{
+    try{
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      String uid = preferences.get('uid') as String;
+      log("UID is $uid");
+      DocumentSnapshot doc =
+      await FirebaseFirestore.instance.collection('users').doc(uid).get();
+
+      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+
+      List<dynamic> dynamicList = data['Orders'] ?? []; // Handle null case
+      List<int> orders = dynamicList.map((e) => e as int).toList();
+
+      log(orders.toString());
+
+      return orders;
+    } catch (e) {
+      log(e.toString());
+      return [];
+    }
+  }
+
+  Future<void> updateOrder(List<OrderSummary> orderSummaries) async{
+    try{
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      String uid = preferences.get('uid') as String;
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .update({'Orders': orderSummaries.map((order)=>order.toJson()).toList()});
+    }
+    catch(e){
+      log(e.toString());
     }
   }
 }
