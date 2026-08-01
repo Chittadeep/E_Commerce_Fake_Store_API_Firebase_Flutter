@@ -74,6 +74,7 @@ class OrderHistoryScreen extends StatelessWidget {
               //     ),
               //   ),
               const SizedBox(height: 8),
+              if(provider.orderHistory.length>8)
               Center(
                 child: Text(
                   'Showing ${provider.orderHistory.length} of ',//${provider.totalOrderCount} orders',
