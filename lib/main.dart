@@ -1,6 +1,7 @@
 import 'package:e_commerce/provider/auth_provider.dart';
 import 'package:e_commerce/provider/categories_provider.dart';
 import 'package:e_commerce/provider/navigation_provider.dart';
+import 'package:e_commerce/provider/order_history_provider.dart';
 import 'package:e_commerce/provider/products_provider.dart';
 import 'package:e_commerce/provider/profile_provider.dart';
 import 'package:e_commerce/screens/cart_screen.dart';
@@ -41,6 +42,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (context)=> ProfileProvider()),
           ChangeNotifierProvider(create: (context) => ProductsProvider(context.read<ProductsService>())),
           ChangeNotifierProvider(create: (context) => CategoriesProvider(context.read<CategoriesService>())),
+          ChangeNotifierProvider(create: (context) => OrderHistoryFilterProvider()),
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
