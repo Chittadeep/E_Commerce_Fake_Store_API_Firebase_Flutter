@@ -313,8 +313,8 @@ class _DeliveryInfoRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: const [
+    return const Row(
+      children: [
         Expanded(
           child: _InfoBox(
             icon: Icons.local_shipping_outlined,
