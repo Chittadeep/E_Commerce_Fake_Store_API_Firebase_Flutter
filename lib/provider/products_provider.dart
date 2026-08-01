@@ -15,7 +15,8 @@ class ProductsProvider extends ChangeNotifier {
   List<int> wishlistProducts = [];
   List<int> productsCart = [];
 
-  final ProductsService _productsService = ProductsService();
+  List<int> orders = [];
+
   final ProductsService _productsService;
 
   final razorpay = Razorpay();
@@ -25,6 +26,7 @@ class ProductsProvider extends ChangeNotifier {
     fetchData();
     fetchWishlist();
     fetchCart();
+    fetchOrders();
   }
 
   void initializeRazorpay() {
@@ -107,6 +109,10 @@ class ProductsProvider extends ChangeNotifier {
 
   Future<void> fetchCart() async {
     productsCart = await _productsService.fetchCart();
+  }
+
+  Future<void> fetchOrders() async {
+    orders = await _productsService.fetchOrders();
   }
 
   void openCheckout({required String name, required double amt,required String description}) {
