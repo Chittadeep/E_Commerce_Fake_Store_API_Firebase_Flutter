@@ -47,7 +47,7 @@ class OrderHistoryScreen extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 40),
                   child: Center(
-                    child: Text('No matching orders.', style: TextStyle(color: Colors.grey.shade600)),
+                    child: Text('No orders.', style: TextStyle(color: Colors.grey.shade600)),
                   ),
                 )
               else
