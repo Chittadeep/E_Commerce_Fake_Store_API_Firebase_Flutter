@@ -37,6 +37,7 @@ class ProductsProvider extends ChangeNotifier {
       log("Payment Success: ${response.paymentId}");
      await updateOrder(productsCart);
       clearCart();
+      fetchOrders();
     });
     razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET,
         (ExternalWalletResponse response) {
