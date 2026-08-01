@@ -1,8 +1,10 @@
 import 'dart:developer';
 import 'package:e_commerce/model/product_model.dart';
+import 'package:e_commerce/model/profile_models.dart';
 import 'package:e_commerce/services/products_service.dart';
 import 'package:flutter/material.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProductsProvider extends ChangeNotifier {
   List<ProductModel>? _data = [];
@@ -31,8 +33,10 @@ class ProductsProvider extends ChangeNotifier {
 
   void initializeRazorpay() {
     razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS,
-        (PaymentSuccessResponse response) {
+        (PaymentSuccessResponse response) async {
       log("Payment Success: ${response.paymentId}");
+     await updateOrder(productsCart);
+      clearCart();
     });
     razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET,
         (ExternalWalletResponse response) {
@@ -135,5 +139,34 @@ class ProductsProvider extends ChangeNotifier {
 
   void decrementCartItem(int productId) { notifyListeners(); } // remove line at 0
   void removeCartItem(int productId) { notifyListeners(); }
-  void clearCart() { notifyListeners(); }
+
+  Future<void> clearCart() async {
+    productsCart.clear();
+    await _productsService.updateCartFirebase([]);
+    notifyListeners(); }
+
+  Future<void> updateOrder(List<int> productIds) async{
+    try{
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      String uid = preferences.get('uid') as String;
+      _productsService.updateOrder(productIds.map((productId)=>
+          _generateOrderSummaryOfAProduct(productId)
+      ).toList());
+    }
+    catch(e){
+      log(e.toString());
+    }
+  }
+
+  OrderSummary _generateOrderSummaryOfAProduct(int productId){
+    ProductModel product = getProductById(productId);
+    OrderSummary orderSummary = OrderSummary(id: product.id!,
+        title: product.title!,
+        photo: product.image!,
+        quantity: 1,
+        status: OrderStatus.inTransit ,
+        date: DateTime.now(),
+        amount: product.price!);
+    return orderSummary;
+  }
 }
