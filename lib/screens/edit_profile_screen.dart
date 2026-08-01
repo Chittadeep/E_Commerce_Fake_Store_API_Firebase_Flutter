@@ -1,6 +1,7 @@
 import 'package:e_commerce/model/profile_models.dart';
 import 'package:e_commerce/provider/navigation_provider.dart';
 import 'package:e_commerce/provider/profile_provider.dart';
+import 'package:e_commerce/screens/order_history_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -77,10 +78,13 @@ class ProfileScreenBody extends StatelessWidget {
                 const SizedBox(height: 12),
                 _SavedAddressesList(addresses: provider.savedAddresses),
                 const SizedBox(height: 32),
-                const _SectionTitle('Order History'),
-                const SizedBox(height: 12),
-                _OrderHistoryList(orders: provider.orderHistory),
-                const SizedBox(height: 16),
+                _SectionTitle(
+                  'Order History',
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const OrderHistoryScreen()),
+                  ),
+                ),
               ],
             ),
           ),
@@ -123,13 +127,28 @@ class _FieldLabel extends StatelessWidget {
 }
 
 class _SectionTitle extends StatelessWidget {
-  const _SectionTitle(this.text);
+  const _SectionTitle(this.text, {this.onTap});
 
   final String text;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Text(text, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold));
+    final title = Text(text, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold));
+
+    if (onTap == null) return title;
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          title,
+          Icon(Icons.chevron_right, color: Colors.grey.shade500),
+        ],
+      ),
+    );
   }
 }
 
@@ -319,96 +338,6 @@ class _SavedAddressCard extends StatelessWidget {
             onPressed: () => context.read<ProfileProvider>().editAddress(context, address),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _OrderHistoryList extends StatelessWidget {
-  const _OrderHistoryList({required this.orders});
-
-  final List<OrderSummary> orders;
-
-  @override
-  Widget build(BuildContext context) {
-    if (orders.isEmpty) {
-      return Text('No past orders yet.', style: TextStyle(color: Colors.grey.shade600));
-    }
-
-    return Column(
-      children: [
-        for (final order in orders) ...[
-          _OrderHistoryCard(order: order),
-          const SizedBox(height: 12),
-        ],
-      ],
-    );
-  }
-}
-
-class _OrderHistoryCard extends StatelessWidget {
-  const _OrderHistoryCard({required this.order});
-
-  final OrderSummary order;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade300),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(order.id, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-              _OrderStatusBadge(status: order.status),
-            ],
-          ),
-          const SizedBox(height: 6),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(order.date, style: TextStyle(color: Colors.grey.shade600, fontSize: 13)),
-              Text(
-                '\$${order.amount.toStringAsFixed(2)}',
-                style: const TextStyle(fontWeight: FontWeight.bold, color: _kBrandBlue, fontSize: 16),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _OrderStatusBadge extends StatelessWidget {
-  const _OrderStatusBadge({required this.status});
-
-  final OrderStatus status;
-
-  @override
-  Widget build(BuildContext context) {
-    final isDelivered = status == OrderStatus.delivered;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(
-        color: isDelivered ? const Color(0xFFDCE6FB) : Colors.grey.shade200,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Text(
-        isDelivered ? 'DELIVERED' : 'IN TRANSIT',
-        style: TextStyle(
-          fontSize: 11,
-          fontWeight: FontWeight.bold,
-          letterSpacing: 0.3,
-          color: isDelivered ? _kBrandBlue : Colors.grey.shade700,
-        ),
       ),
     );
   }
