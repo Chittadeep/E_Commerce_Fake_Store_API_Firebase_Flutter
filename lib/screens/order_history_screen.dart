@@ -77,7 +77,7 @@ class OrderHistoryScreen extends StatelessWidget {
               if(provider.orderHistory.length>8)
               Center(
                 child: Text(
-                  'Showing ${provider.orderHistory.length} of ',//${provider.totalOrderCount} orders',
+                  'Showing ${provider.orderHistory.length} of ${provider.orderHistory.length} orders',
                   style: TextStyle(color: Colors.grey.shade500, fontSize: 12),
                 ),
               ),
