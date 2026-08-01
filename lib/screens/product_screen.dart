@@ -102,8 +102,8 @@ class _ProductScreenState extends State<ProductScreen> {
             _BottomActionBar(
               isInCart: isInCart,
               isInWishlist: isInWishlist,
-              onWishlistTap: () => provider.tapAddToWishlist(product.id!),
-              onAddToCartTap: () => provider.tapAddToCart(product.id!),
+              onWishlistTap: () => provider.tapWishlistProduct(product.id!),
+              onAddToCartTap: () => provider.tapCartProduct(product.id!),
             ),
           ],
         ),
