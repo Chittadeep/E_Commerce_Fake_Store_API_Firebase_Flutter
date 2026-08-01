@@ -226,22 +226,19 @@ class ProfileProvider extends ChangeNotifier {
       SharedPreferences preferences = await SharedPreferences.getInstance();
       String uid = preferences.get('uid') as String;
 
-      QuerySnapshot query = await FirebaseFirestore.instance
+      DocumentSnapshot<Map<String, dynamic>> doc =
+      await FirebaseFirestore.instance
           .collection('users')
           .doc(uid)
-          .collection('orders')
-          .orderBy('date', descending: true)
           .get();
 
-      orderHistory = query.docs.map((doc) {
-        final data = doc.data() as Map<String, dynamic>;
-        return OrderSummary(
-          id: data['orderId'] as String? ?? doc.id,
-          status: data['status'] == 'delivered' ? OrderStatus.delivered : OrderStatus.inTransit,
-          date: data['date'] as String? ?? '',
-          amount: (data['amount'] as num?)?.toDouble() ?? 0,
-        );
-      }).toList();
+      if (doc.exists) {
+        log((doc.data()?['Orders']).toString());
+        final orders = doc.data()?['Orders'] as List<dynamic>? ?? [];
+
+        orderHistory = orders.map((orderSummary)
+        => OrderSummary.fromJson(orderSummary)).toList();
+      }
     } catch (e) {
       log(e.toString());
     } finally {
