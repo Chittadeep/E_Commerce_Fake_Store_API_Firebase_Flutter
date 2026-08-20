@@ -86,6 +86,43 @@ class _AddressCard extends StatelessWidget {
 
   final SavedAddress address;
 
+  Future<void> _confirmDelete(BuildContext context) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Delete Address'),
+        content: Text(
+          'Are you sure you want to delete "${address.label}" address? '
+              'This action cannot be undone.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true && context.mounted) {
+      context.read<AddressProvider>().deleteAddress(address.id);
+    }
+  }
+
+  void _editAddress(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => AddAddressScreen(existingAddress: address),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -98,57 +135,76 @@ class _AddressCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              _Tag(label: address.label),
-              const SizedBox(width: 8),
-              if (address.isDefault) const _DefaultBadge(),
-              const Spacer(),
-              IconButton(
-                icon: const Icon(Icons.edit_outlined, size: 20, color: Colors.black87),
-                onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => AddAddressScreen(existingAddress: address)),
-                ),
-              ),
-              IconButton(
-                icon: const Icon(Icons.delete_outline, size: 20, color: Colors.black87),
-                onPressed: () => context.read<AddressProvider>().deleteAddress(address.id),
-              ),
-            ],
-          ),
+          _buildHeader(context),
           const SizedBox(height: 8),
-          Text(address.fullName, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+          Text(
+            address.fullName,
+            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
           const SizedBox(height: 6),
           Text(
             address.formattedAddress,
-            style: const TextStyle(color: Colors.black87, height: 1.4, fontSize: 15),
+            style: const TextStyle(
+              color: Colors.black87,
+              height: 1.4,
+              fontSize: 15,
+            ),
           ),
           const SizedBox(height: 10),
-          Row(
-            children: [
-              Icon(Icons.phone_outlined, size: 16, color: Colors.grey.shade600),
-              const SizedBox(width: 6),
-              Text(address.phone, style: TextStyle(color: Colors.grey.shade700)),
-            ],
-          ),
-          if (!address.isDefault) ...[
-            const SizedBox(height: 12),
-            const Divider(height: 1),
-            const SizedBox(height: 8),
-            InkWell(
-              onTap: () => context.read<AddressProvider>().setDefaultAddress(address.id),
-              child: Row(
-                children: [
-                  Icon(Icons.radio_button_off, size: 20, color: Colors.grey.shade500),
-                  const SizedBox(width: 10),
-                  Text('Set as Default', style: TextStyle(color: Colors.grey.shade800)),
-                ],
-              ),
-            ),
-          ],
+          _buildPhoneRow(),
+          if (!address.isDefault) _buildSetDefaultAction(context),
         ],
       ),
+    );
+  }
+
+  Widget _buildHeader(BuildContext context) {
+    return Row(
+      children: [
+        _Tag(label: address.label),
+        const SizedBox(width: 8),
+        if (address.isDefault) const _DefaultBadge(),
+        const Spacer(),
+        IconButton(
+          icon: const Icon(Icons.edit_outlined, size: 20, color: Colors.black87),
+          onPressed: () => _editAddress(context),
+        ),
+        IconButton(
+          icon: const Icon(Icons.delete_outline, size: 20, color: Colors.black87),
+          onPressed: () => _confirmDelete(context),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPhoneRow() {
+    return Row(
+      children: [
+        Icon(Icons.phone_outlined, size: 16, color: Colors.grey.shade600),
+        const SizedBox(width: 6),
+        Text(address.phone, style: TextStyle(color: Colors.grey.shade700)),
+      ],
+    );
+  }
+
+  Widget _buildSetDefaultAction(BuildContext context) {
+    return Column(
+      children: [
+        const SizedBox(height: 12),
+        const Divider(height: 1),
+        const SizedBox(height: 8),
+        InkWell(
+          onTap: () =>
+              context.read<AddressProvider>().setDefaultAddress(address.id),
+          child: Row(
+            children: [
+              Icon(Icons.radio_button_off, size: 20, color: Colors.grey.shade500),
+              const SizedBox(width: 10),
+              Text('Set as Default', style: TextStyle(color: Colors.grey.shade800)),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
