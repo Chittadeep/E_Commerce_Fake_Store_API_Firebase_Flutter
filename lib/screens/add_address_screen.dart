@@ -53,30 +53,34 @@ class _AddAddressScreenBody extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const _FieldLabel('Address Label'),
-                DropdownButtonFormField<String>(
-                  decoration: _fieldDecoration(null),
-                  icon: const Icon(Icons.arrow_drop_down, color: Colors.black87),
-                  items: AddressTypes.values
-                      .map((l) => DropdownMenuItem<String>(
-                    value: l.name,
-                    child: Row(
-                      children: [
-                        Icon(
-                          l == 'Home'
-                              ? Icons.home_outlined
-                              : l == 'Office'
-                              ? Icons.business_outlined
-                              : Icons.location_on_outlined,
-                          size: 18,
-                          color: _kBrandBlue,
-                        ),
-                        const SizedBox(width: 8),
-                        Text(l.name),
-                      ],
-                    ),
-                  ))
-                      .toList(),
-                  onChanged: form.selectLabel,
+                Consumer<AddAddressFormProvider>(builder: (context, value, child) =>
+                  DropdownButtonFormField<String>(
+                    initialValue: value.label.name,
+                    decoration: _fieldDecoration(null),
+                    icon: const Icon(Icons.arrow_drop_down, color: Colors.black87),
+                    items: AddressTypes.values
+                        .map((l) => DropdownMenuItem<String>(
+                      value: l.name,
+                      child: Row(
+                        children: [
+                          Icon(
+                            l == 'Home'
+                                ? Icons.home_outlined
+                                : l == 'Office'
+                                ? Icons.business_outlined
+                                : Icons.location_on_outlined,
+                            size: 18,
+                            color: _kBrandBlue,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(l.name),
+                        ],
+                      ),
+                    ))
+                        .toList(),
+                    onChanged: form.selectLabel,
+
+                  ),
                 ),
                 const SizedBox(height: 18),
                 const _FieldLabel('Full Name'),
