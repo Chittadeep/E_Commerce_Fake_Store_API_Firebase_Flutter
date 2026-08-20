@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 class AddAddressFormProvider extends ChangeNotifier {
   AddAddressFormProvider({SavedAddress? existingAddress}) : _existingAddress = existingAddress {
     if (existingAddress != null) {
-      label = existingAddress.label;
+      selectLabel(existingAddress.label.name);
       nameController.text = existingAddress.fullName;
       streetController.text = existingAddress.streetAddress;
       apartmentController.text = existingAddress.apartment ?? '';
