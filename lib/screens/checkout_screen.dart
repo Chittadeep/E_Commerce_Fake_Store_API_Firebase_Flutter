@@ -1,18 +1,13 @@
-// lib/screens/checkout_screen.dart
-//
-// Pushed from CartScreenBody's "Proceed to Checkout" button, not a tab —
-// it's a drill-down, so it keeps its own Scaffold/AppBar/back button
-// rather than living inside MainShell.
+import 'package:e_commerce/model/profile_models.dart';
+import 'package:e_commerce/provider/address_provider.dart';
 import 'package:e_commerce/provider/checkout_provider.dart';
 import 'package:e_commerce/provider/products_provider.dart';
+import 'package:e_commerce/provider/profile_provider.dart';
+import 'package:e_commerce/screens/add_address_screen.dart';
 import 'package:e_commerce/widgets/shop_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-/// Entry point: scopes a fresh CheckoutProvider to this screen (and
-/// everything pushed on top of it) via ChangeNotifierProvider, the same
-/// way every other feature in this app scopes its ChangeNotifier — the
-/// widget itself stays a plain StatelessWidget with no local state.
 class CheckoutScreen extends StatelessWidget {
   const CheckoutScreen({super.key, required this.subtotal});
 
@@ -160,6 +155,16 @@ class _ShippingAddressSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final checkout = context.watch<CheckoutProvider>();
+    final addresses = context.watch<AddressProvider>().savedAddresses;
+
+    SavedAddress? defaultAddress;
+    for (final address in addresses) {
+      if (address.isDefault) {
+        defaultAddress = address;
+        break;
+      }
+    }
+    checkout.ensureAddressSelected(addresses.map((a) => a.id).toList(), defaultAddress?.id);
 
     return _SectionCard(
       number: 1,
@@ -168,54 +173,101 @@ class _ShippingAddressSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const _FieldLabel('Full Name'),
-          TextFormField(controller: checkout.nameController, decoration: _fieldDecoration(hintText: 'John Doe')),
-          const SizedBox(height: 16),
-          const _FieldLabel('Street Address'),
-          TextFormField(
-            controller: checkout.streetController,
-            decoration: _fieldDecoration(hintText: '123 Athletic Way'),
-          ),
-          const SizedBox(height: 16),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                flex: 2,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const _FieldLabel('City'),
-                    TextFormField(controller: checkout.cityController, decoration: _fieldDecoration()),
-                  ],
+          if (addresses.isEmpty)
+            Text('No saved addresses yet.', style: TextStyle(color: Colors.grey.shade600))
+          else
+            for (final address in addresses) ...[
+              _AddressOptionCard(
+                address: address,
+                isSelected: address.id == checkout.selectedAddressId,
+                onTap: () => checkout.selectAddress(address.id),
+                onEditTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => AddAddressScreen(existingAddress: address)),
                 ),
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                flex: 3,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const _FieldLabel('Postal Code'),
-                    TextFormField(
-                      controller: checkout.postalCodeController,
-                      keyboardType: TextInputType.number,
-                      decoration: _fieldDecoration(hintText: '97201'),
-                    ),
-                  ],
-                ),
-              ),
+              const SizedBox(height: 12),
             ],
-          ),
-          const SizedBox(height: 16),
-          const _FieldLabel('Country'),
-          DropdownButtonFormField<String>(
-            value: checkout.country,
-            decoration: _fieldDecoration(),
-            items: CheckoutProvider.countries.map((c) => DropdownMenuItem(value: c, child: Text(c))).toList(),
-            onChanged: checkout.selectCountry,
+          InkWell(
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const AddAddressScreen()),
+            ),
+            child: const Padding(
+              padding: EdgeInsets.symmetric(vertical: 4),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.add_circle_outline, size: 20, color: kBrandBlue),
+                  SizedBox(width: 8),
+                  Text('Add New Address', style: TextStyle(color: kBrandBlue, fontWeight: FontWeight.w600)),
+                ],
+              ),
+            ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _AddressOptionCard extends StatelessWidget {
+  const _AddressOptionCard({
+    required this.address,
+    required this.isSelected,
+    required this.onTap,
+    required this.onEditTap,
+  });
+
+  final SavedAddress address;
+  final bool isSelected;
+  final VoidCallback onTap;
+  final VoidCallback onEditTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: isSelected ? kBrandBlue : Colors.grey.shade300, width: isSelected ? 2 : 1),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Radio<bool>(value: true, groupValue: isSelected, onChanged: (_) => onTap(), activeColor: kBrandBlue),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        address.isDefault ? '${address.label.name} (Default)' : address.label.name,
+                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                      ),
+                      GestureDetector(
+                        onTap: onEditTap,
+                        child: const Text(
+                          'Edit',
+                          style: TextStyle(color: kBrandBlue, fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Text(address.fullName, style: const TextStyle(fontSize: 13)),
+                  Text(
+                    address.formattedAddressSingleLine,
+                    style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
