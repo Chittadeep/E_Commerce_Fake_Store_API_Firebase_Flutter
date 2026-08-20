@@ -33,6 +33,7 @@ class AddressProvider extends ChangeNotifier {
     //final newAddress = address.copyWith(isDefault: shouldBeDefault);
 
     if (shouldBeDefault) {
+      address.isDefault=true;
       savedAddresses.add(address);
     } else {
       savedAddresses = [...savedAddresses, address];
