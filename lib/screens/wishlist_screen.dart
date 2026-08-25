@@ -1,8 +1,10 @@
 // lib/screens/wishlist_screen.dart
 import 'package:e_commerce/model/product_model.dart';
+import 'package:e_commerce/provider/cart_provider.dart';
 import 'package:e_commerce/provider/categories_provider.dart';
 import 'package:e_commerce/provider/navigation_provider.dart';
 import 'package:e_commerce/provider/products_provider.dart';
+import 'package:e_commerce/provider/wishlist_provider.dart';
 import 'package:e_commerce/screens/product_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -328,15 +330,9 @@ class _CategoryShortcutTile extends StatelessWidget {
 class _WishlistCard extends StatelessWidget {
   const _WishlistCard({
     required this.product,
-    required this.onRemove,
-    required this.onMoveToCart,
-    required this.onTap,
   });
 
   final ProductModel product;
-  final VoidCallback onRemove;
-  final VoidCallback onMoveToCart;
-  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -372,7 +368,7 @@ class _WishlistCard extends StatelessWidget {
                   top: 4,
                   right: 4,
                   child: GestureDetector(
-                    onTap: onRemove,
+                    onTap: ()=>cartProvider.tapCartProduct(product.id!),
                     child: Container(
                       padding: const EdgeInsets.all(6),
                       decoration: BoxDecoration(color: Colors.white.withOpacity(0.9), shape: BoxShape.circle),
@@ -408,7 +404,10 @@ class _WishlistCard extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                 ),
-                onPressed: onMoveToCart,
+                onPressed: (){
+                  cartProvider.tapCartProduct(product.id!);
+                  wishlistProvider.tapWishlistProduct(product.id!);
+                },
                 icon: const Icon(Icons.shopping_cart_outlined, size: 16),
                 label: const Text('Move to Cart', style: TextStyle(fontSize: 12)),
               ),
